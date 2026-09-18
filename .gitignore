@@ -1,0 +1,15 @@
+.venv/
+venv/
+env/
+docker/
+__pycache__/
+*.pyc
+
+.env
+settings.json
+
+*.csv
+*.log
+
+.idea/
+.vscode/
