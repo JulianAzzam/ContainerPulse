@@ -1,11 +1,11 @@
 from typing import List
 
-from src.config import settings
-from src.webhook.WebhookObject import WebhookObject
+from ..config import settings
+from .webhook_object import WebhookObject
 
 
 class WebhookManager:
-
+    
     _instance = None
     _initialized = False
     def __new__(cls, *args, **kwargs):
@@ -18,10 +18,11 @@ class WebhookManager:
         if self._initialized:
             return  # Prevent re-initialization
         self.webhooks = []
-        for webhook in settings["webhooks"]:
-            name = webhook["name"]
-            url = webhook["url"]
-            self.webhooks.append(WebhookObject(name,url))
+        if "webhooks" in settings:
+            for webhook in settings["webhooks"]:
+                name = webhook["name"]
+                url = webhook["url"]
+                self.webhooks.append(WebhookObject(name,url))
         self._initialized = True
 
     def get_webhooks(self) -> List[WebhookObject]:

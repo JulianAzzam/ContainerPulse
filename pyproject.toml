@@ -1,23 +1,35 @@
+[build-system]
+requires = ["setuptools>=75"]
+build-backend = "setuptools.build_meta"
 
 [project]
 name = "containerpulse"
-version = "0.0.1"
-authors = [
-  { name="Julian Azzam", email="julian.azzam236@gmail.com" },
-]
-description = "A small example package"
+version = "0.1.0"
+description = "Lightweight container workload anomaly detection agent"
 readme = "README.md"
-requires-python = ">=3.9"
-classifiers = [
-    "Programming Language :: Python :: 3",
-    "Operating System :: OS Independent",
-]
-license = "MIT"
-license-files = ["LICEN[CS]E*"]
+requires-python = ">=3.10"
+license = { file = "LICENSE" }
 
-[project.urls]
-Homepage = "https://github.com/pypa/sampleproject"
-Issues = "https://github.com/pypa/sampleproject/issues"
+dependencies = [
+    "numpy",
+    "scikit-learn",
+    "requests",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "pytest-cov",
+]
 
 [project.scripts]
-containerpulse = "src.main:main"
+containerpulse = "containerpulse.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = [
+    "integration: tests requiring a running Docker daemon",
+]

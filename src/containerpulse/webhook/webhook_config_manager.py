@@ -2,10 +2,15 @@
 
 import json
 
-from src.config import SETTINGS_PATH, settings
+from ..config import SETTINGS_PATH, settings
 WEBHOOKS = "webhooks"
 
 class WebhookConfigManager:
+    """
+    Manages webhooks in settings.json.
+
+    This class manages the configuration of webhooks NOT webhook object creation at runtime.
+    """
     def add(self, name, url):
         if WEBHOOKS not in settings:
             settings[WEBHOOKS] = []

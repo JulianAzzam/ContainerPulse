@@ -2,12 +2,19 @@
 
 import numpy as np
 
-
 class ResourceGuard:
+    """
+    Detects deterministic resource anomalies that should not rely solely
+    on the Isolation Forest model.
+
+    Currently monitors sustained memory usage above a learned threshold.
+    """
     def __init__(self,workload_id):
         self.workload_id = workload_id
         self.memory_p99 = None
         self.above_threshhold_timer = 0
+        self.consecutive_memory_violations = 0
+        self.memory_incident_active = False
 
     def fit(self, training_samples, columns):
         memory_index = columns.index("Memory")
@@ -22,7 +29,15 @@ class ResourceGuard:
 
         self.memory_threshold = self.memory_p99 + (3 * iqr)
 
-    def evaluate(self, sample, columns):
+    def evaluate(self, sample, columns) -> dict | None:
+        """
+        Evaluate a processed workload sample against learned resource bounds.
+
+        Returns:
+            dict | None:
+                A structured resource anomaly when a threshold is exceeded
+                for the required number of consecutive samples, otherwise None.
+        """
         memory_index = columns.index("Memory")
         memory = sample[memory_index]
         if memory > self.memory_threshold:

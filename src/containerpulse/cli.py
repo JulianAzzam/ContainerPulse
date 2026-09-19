@@ -1,14 +1,18 @@
 
 import argparse
+import logging
 import threading
 
-from src.RuntimeCollector import RuntimeCollector
-from src.notifier.Notifier import Notifier
-from src.webhook.WebhookConfigManager import WebhookConfigManager
-from src.webhook.WebhookManager import WebhookManager
-from src.config import webhook_manager
+from .runtime_collector import RuntimeCollector
+from .notifier.notifier import Notifier
+from .webhook.webhook_config_manager import WebhookConfigManager
+from .webhook.webhook_manager import WebhookManager
+from .config import webhook_manager
 
 def build_parser():
+    """
+    Build and return the ContainerPulse command-line interface parser.
+    """
     parser = argparse.ArgumentParser(
         prog="containerpulse",
         description="Container workload anomaly detection agent",
@@ -70,6 +74,10 @@ def build_parser():
     return parser
 
 def handle_webhook_command(args):
+    """
+    Dispatch webhook configuration subcommands such as add, list,
+    remove, and update.
+    """
     manager = WebhookConfigManager()
 
     if args.webhook_command == "add":
@@ -89,6 +97,9 @@ def handle_webhook_command(args):
 
 
 def main():
+    """
+    Parse CLI arguments and dispatch the selected ContainerPulse command.
+    """
     parser = build_parser()
     args = parser.parse_args()
 
@@ -104,7 +115,15 @@ def main():
 
 
 def start_containerpulse(args):
-    
+    """
+    Start the ContainerPulse monitoring agent.
+
+    Initializes logging, webhook delivery, the notification worker,
+    and the runtime collector, then keeps the monitoring process active
+    until interrupted.
+    """
+    configure_logging(args.verbose)
+
     global webhook_manager
     webhook_manager = WebhookManager()
     notification_manager = Notifier()
@@ -112,11 +131,25 @@ def start_containerpulse(args):
     events_thread = threading.Thread(target=notification_manager.listen,kwargs={"webhook_manager": webhook_manager, "stop_event": stop_event},daemon=True)
     events_thread.start()
     try:
-        collector = RuntimeCollector(vars(args))
-        collector.run()
+        RuntimeCollector(vars(args))
     except KeyboardInterrupt:
         stop_event.set()
         return
+
+def configure_logging(verbose=False):
+    if verbose:
+        logging.basicConfig(
+            level=logging.DEBUG,
+            format=(
+                "%(asctime)s | %(levelname)s | "
+                "%(name)s | %(message)s"
+            ),
+        )
+    else:
+        logging.basicConfig(
+            level=logging.INFO,
+            format="%(levelname)s | %(message)s",
+        )
 
 if __name__ == "__main__":
     main()

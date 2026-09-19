@@ -1,14 +1,17 @@
 from threading import Event
 
-from src.config import event_queue
-from src.events.AnomalyEvent import AnomalyEvent
-from src.webhook.WebhookManager import WebhookManager
-from src.webhook.WebhookObject import WebhookObject
+from ..config import event_queue
+from ..events.anomaly_event import AnomalyEvent
+from ..webhook.webhook_manager import WebhookManager
+from ..webhook.webhook_object import WebhookObject
 
 
 
 class Notifier:
-
+    """
+    Listens for anomalies pushed to the event_queue on a separate thread
+    Calls all available webhooks.
+    """
     _instance = None
     _initialized = False
     def __new__(cls, *args, **kwargs):

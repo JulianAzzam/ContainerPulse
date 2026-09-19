@@ -1,15 +1,14 @@
-from src.config import settings
+from ..config import settings
 
 class AnomalyEvent:
 
-    def __init__(self, workload_id, timestamp, severity,decision, metrics):
+    def __init__(self, workload_id, timestamp, severity,decision, unusual_features):
         self.infra = settings["infra"]
         self.title = "Anomaly Detected"
         metric_lines = [
             self.format_metric(name, metric)
-            for name, metric in metrics.items()
+            for name, metric in unusual_features.items()
         ]
-        print(metric_lines)
         self.message = (
         f"**Workload:** `{workload_id}`\n"
         f"**Time:** {timestamp}\n"

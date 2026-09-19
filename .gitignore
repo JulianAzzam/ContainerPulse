@@ -4,6 +4,9 @@ env/
 docker/
 __pycache__/
 *.pyc
+.pytest_cache/
+.coverage
+htmlcov/
 
 .env
 settings.json
@@ -13,3 +16,9 @@ settings.json
 
 .idea/
 .vscode/
+opencode.jsonc
+.mcp.json
+AGENTS.md
+dist/
+build/
+*.egg-info/
