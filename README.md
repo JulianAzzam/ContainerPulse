@@ -1,5 +1,7 @@
 # ContainerPulse
 
+[![Tests](https://github.com/JulianAzzam/ContainerPulse/actions/workflows/tests.yml/badge.svg)](https://github.com/JulianAzzam/ContainerPulse/actions/workflows/tests.yml)
+
 Lightweight container workload anomaly detection for Docker environments.
 
 ContainerPulse monitors Docker container metrics and runtime events, learns a baseline for each workload, and surfaces abnormal behavior using a combination of machine learning and deterministic resource checks.
